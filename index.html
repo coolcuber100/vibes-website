@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SPUD EXPERIENCE: MONSTER EDITION</title>
+    <style>
+        /* GOOFY STYLES - Pre-reverted to chaos */
+        body {
+            background-color: #00ff00; /* Toxic Lime Green */
+            background-image: repeating-linear-gradient(45deg, #00ff00, #00ff00 10px, #ff00ff 10px, #ff00ff 20px);
+            font-family: "Comic Sans MS", "Chalkboard SE", cursive;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden; /* Hide horizontal scroll */
+            /* Changes cursor to fries */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size:24px"><text y="20">🍟</text></svg>'), auto;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            margin: 50px auto;
+            padding: 40px;
+            max-width: 600px;
+            border: 10px ridge #ffff00;
+            border-radius: 100px 20px 100px 20px;
+            position: relative; /* Needed for absolute elements inside if needed */
+        }
+
+        h1 {
+            font-size: clamp(30px, 8vw, 50px);
+            text-shadow: 4px 4px #ff0000;
+            animation: shake 0.5s infinite;
+        }
+
+        /* THE SPINNING POTATO */
+        .potato-box {
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .potato {
+            font-size: 120px;
+            display: inline-block;
+            filter: drop-shadow(0 0 20px gold);
+            animation: spin-and-grow 3s linear infinite;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        /* THE MONSTERS (JavaScript Popups) */
+        .scary-monster {
+            position: fixed; /* Pops up relative to viewport */
+            font-size: 80px;
+            pointer-events: none; /* Can't click them, just enjoy them */
+            z-index: 100;
+            animation: spook 1s ease-out;
+            opacity: 0; /* Starts hidden, script controls life */
+        }
+
+        @keyframes spook {
+            0% { transform: scale(0.1) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: scale(1.5) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes spin-and-grow {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.8); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            40% { transform: translate(3px, 2px) rotate(-1deg); }
+            60% { transform: translate(-1px, -1px) rotate(1deg); }
+            80% { transform: translate(-3px, 1px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* BUTTON THAT RUNS AWAY */
+        #run-away {
+            padding: 20px 40px;
+            font-size: 24px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 5px 5px 0px black;
+            transition: 0.1s;
+        }
+
+        footer {
+            margin-top: 100px;
+            font-size: 12px;
+            letter-spacing: 5px;
+            background: black;
+            padding: 10px;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>SPUD-O-VISION 2026</h1>
+        
+        <div class="potato-box">
+            <div class="potato" id="main-potato">🥔</div>
+        </div>
+
+        <p>Warning: Staring at the potato for too long may cause a sudden craving for french fries. Click the potato to change its destiny.</p>
+        <p><i>Look out for unexpected visitors!</i></p>
+
+        <button id="run-away">CLICK FOR POTATO SECRET</button>
+    </div>
+
+    <footer>
+        NO RIGHTS RESERVED. POTATOES ARE FREE AGENTS.
+    </footer>
+
+    <script>
+        const btn = document.getElementById('run-away');
+        const potato = document.getElementById('main-potato');
+
+        // --- EXISTING LOGIC ---
+        
+        // 1. The button runs away when you try to click it
+        btn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - btn.clientWidth);
+            const y = Math.random() * (window.innerHeight - btn.clientHeight);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        });
+
+        // 2. Clicking the potato changes its form and the background
+        let clicks = 0;
+        const emojis = ['🥔', '🍟', '🍠', '🥗', '🥔'];
+        potato.addEventListener('click', () => {
+            clicks++;
+            potato.innerHTML = emojis[clicks % emojis.length];
+            document.body.style.backgroundColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+        });
+
+        // --- NEW MONSTER LOGIC ---
+        
+        const monsterTypes = ['👾', '👻', '👺', '👹', '👽', '💀'];
+
+        function spawnMonster() {
+            // Create a temporary monster element
+            const monster = document.createElement('div');
+            monster.className = 'scary-monster';
+            
+            // Randomly choose the monster look
+            monster.innerHTML = monsterTypes[Math.floor(Math.random() * monsterTypes.length)];
+            
+            // Random position on the whole screen
+            // Subtracting 100 to keep it somewhat in view
+            const randomX = Math.random() * (window.innerWidth - 100);
+            const randomY = Math.random() * (window.innerHeight - 100);
+            
+            monster.style.left = randomX + 'px';
+            monster.style.top = randomY + 'px';
+            
+            // Add to the page
+            document.body.appendChild(monster);
+            
+            // Automatic cleanup! Delete the monster after its 1-second animation finishes
+            setTimeout(() => {
+                monster.remove();
+            }, 1000); // Wait 1000ms (1 second) then delete
+        }
+
+        // Set the monster spawner to activate every 4000ms (4 seconds)
+        setInterval(spawnMonster, 4000);
+    </script>
+
+</body>
+</html>
